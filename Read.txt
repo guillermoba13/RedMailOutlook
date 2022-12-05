@@ -1,0 +1,12 @@
+Email property	    Data type	Description
+
+emailSubject	    String	    Retrieves the value of the email subject.
+emailFrom	        String	    Retrieves the email ID which is received from. The from address is what your recipients will see.
+emailTo	            String	    Retrieves the recipient's email ID.
+emailCc	            String	    Retrieves the recipient mail id from the CC list.
+emailBcc	        String	    Retrieves the recipient mail id from the BCC list.
+emailMessage	    String	    Retrieves the text from the email body.
+emailReceivedTime	String	    Retrieves the time when the email was received.
+emailReceivedDate	String	    Retrieves the date when the email was received.
+emailSentTime	    String	    Retrieves the time when the email was sent.
+emailSentDate	    String	    Retrieves the date when the email was sent.
