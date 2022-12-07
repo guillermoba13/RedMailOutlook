@@ -27,7 +27,7 @@ Function CloseExcelInstance(infoLogFile, errorLogFile, nameScript)
         objShell.Run "taskkill /f /im excel.exe"
         If infoLogFile <> "" Then WriteLog infoLogFile, "INFO", nameScript & "Killing any lining Excel instance"
     Else
-        If errorLogFile <> "" Then WriteLog errorLogFile, "INFO", nameScript & "It was not possible to close the Excel instance"
+        If errorLogFile <> "" Then WriteLog errorLogFile, "INFO", nameScript & " It was not possible to close the Excel instance"
     End If
     Set objShell = Nothing
     Set objWMIService = Nothing
@@ -56,6 +56,44 @@ Function CreateExcelInstance(infoLogFile, errorLogFile, nameScript)
     Set CreateExcelInstance = excelObj
 End Function ' CreateExcelInstance
 
+Function GetValueNodeXml(nameNode, pathConfigXmlFile, errorLogFile, errorMessage)
+    Dim arrayNode, count
+    Set objXML = CreateObject("Msxml2.DOMDocument")
+    objXML.async = False
+    objXML.load(pathConfigXmlFile)
+
+    Set objError = objXML.parseError  
+    With objError  
+        If .errorCode = 0 Then  
+            Set objNodes = objXML.selectNodes(nameNode)
+            item = Split(objNodes.item(0).text, "##")
+            If UBound(item) >= 2 Then
+                ReDim arrayNode(UBound(item) - 2)
+                count = 0
+                For Each elem In item
+                    If Trim(elem) <> "" Then
+                        arrayNode(count) = Trim(elem)
+                        count = count + 1
+                    End If
+                Next
+                GetValueNodeXml = arrayNode
+            Else
+                'error
+                errorMessage = "The node is null"
+                If errorLogFile <> "" Then WriteLog errorLogFile, "ERROR", nameScript & errorMessage
+            End If
+        Else  
+            errorMessage = "XML Document could not be parsed!!!" & vbCrLf &_  
+                            "ErrorCode: " & .errorCode & vbCrLf &_  
+                            "Line: " & .line & vbCrLf &_  
+                            "Reason: " & .reason & vbCrLf &_  
+                            "Path: " & .URL 
+            If errorLogFile <> "" Then WriteLog errorLogFile, "ERROR", nameScript & errorMessage
+        End If  
+    End With  
+    Set objXML = Nothing  
+End Function ' GetValueNodeXml
+
 Function RunTimeMail(nameScript, infoLogFile, errorLogFile, pathFileSave, nameFileSave, subject, _
     fristRowHeader, letterSubject, letterColumnSenderEmailAddress, letterColumnTo, letterColumnCc, letterColumnBcc, _
     letterColumnBody, letterColumnReceivedTime, letterColumnReceivedDate, letterColumnSendTime, letterColumnSendDate, valueSubject, _
@@ -74,14 +112,16 @@ Function RunTimeMail(nameScript, infoLogFile, errorLogFile, pathFileSave, nameFi
     ' 13 = "Tasks"
     ' 15 = "Reminders"
     ' 16 = "Drafts"
+    Const inbox = 6
 
     ' the connection to Outlook application
     Set objOutlook = CreateObject("Outlook.Application")
     Set objNamespace = objOutlook.GetNamespace("MAPI")
-    Set objFolder = objNamespace.GetDefaultFolder(6) 'Inbox
+    Set objFolder = objNamespace.GetDefaultFolder(inbox)
 
     Set colItems = objFolder.Items
-    Set colFilteredItems = colItems.Restrict("[Unread]=true") ' reading of unread mails
+    Set colFilteredItems = colItems.Restrict("[Unread]=true" & " And [Subject] = " & subject) ' reading of unread mails
+    MsgBox "colFilteredItems  "&colFilteredItems.count
     Set colFilteredItems = colFilteredItems.Restrict("[Subject] = " & subject)
 
     MsgBox colFilteredItems.Count
@@ -141,7 +181,7 @@ Function RunTimeMail(nameScript, infoLogFile, errorLogFile, pathFileSave, nameFi
     Set objSheet = Nothing
 End Function ' RunTimeMail
 
-' -----------------------------------------------
+' ----------------------------------------------- jose luis duarte
 ' the function to manupulate excel applications
 ' -----------------------------------------------
 
@@ -153,39 +193,102 @@ Dim letterColumnBody, letterColumnReceivedTime, letterColumnReceivedDate, letter
 Dim valueSenderEmailAddress, valueTo, valueCc, valueBcc, valueBody, valueReceivedTime, valueReceivedDate, valueSendTime, valueSendDate
 Dim letterColumnFristRangeArray, letterColumnLastRangeArray, fristRowRangeArray
 
+
+' geting values 
+Dim objXML, GroupName, Games, pathConfigExcelXmlFile, pathConfigXmlFile
+Dim plot, GameName, GameRating, errorMessage
+
+pathConfigExcelXmlFile = "C:\Users\gbarajas\documents\Curses\Bots\BotEmail\Config\ConfigExcel.xml"
+pathConfigXmlFile = "C:\Users\gbarajas\documents\Curses\Bots\BotEmail\Config\Config.xml"
 infoLogFile = "C:\Users\gbarajas\Documents\Curses\Bots\BotEmail\infoLog.txt"
 errorLogFile = "C:\Users\gbarajas\Documents\Curses\Bots\BotEmail\errorLog.txt"
 
-' ---- ---- the excel information dinamics  ---------------
-pathFileSave = "C:\Users\gbarajas\Documents\Curses\Bots\BotEmail\"
-nameFileSave = "Test.xlsx"
-letterColumnFristRangeArray = "A"
-letterColumnLastRangeArray = "J"
-fristRowRangeArray = 2
-fristRowHeader = 1
-letterSubject = "A"
-letterColumnSenderEmailAddress = "B" 
-letterColumnTo = "C"
-letterColumnCc = "D"
-letterColumnBcc = "E"
-letterColumnBody = "F"
-letterColumnReceivedTime = "G"
-letterColumnReceivedDate = "H"
-letterColumnSendTime = "I"
-letterColumnSendDate = "J"
-valueSubject = "Subject"
-valueSenderEmailAddress = "SenderEmailAddress"
-valueTo = "To"
-valueCc = "Cc"
-valueBcc = "Bcc"
-valueBody = "Body"
-valueReceivedTime = "ReceivedTime"
-valueReceivedDate = "ReceivedDate"
-valueSendTime = "SendTime"
-valueSendDate = "SendDate"
-' -------------------------------------------
+' get paths save files
+errorMessage = ""
+nameNode = "//PathsLocal"
+listItemsXml = GetValueNodeXml(nameNode, pathConfigXmlFile, errorLogFile, errorMessage)
+If errorMessage <> "" Then
+    ' error
+    Stop
+Else
+    pathFileSave = listItemsXml(0)
+    nameFileSave = listItemsXml(1)
+    Set listItemsXml = Nothing
+    Set item = Nothing
+End If
 
-subject = "Weekly Learning Digest"
+' data filter in mail
+errorMessage = ""
+nameNode = "//Filter"
+listItemsXml = GetValueNodeXml(nameNode, pathConfigXmlFile, errorLogFile, errorMessage)
+If errorMessage <> "" Then
+    ' error
+    Stop
+Else
+    subject = listItemsXml(0)
+    Set listItemsXml = Nothing
+    Set item = Nothing
+End If
+
+' letters excel 
+errorMessage = ""
+nameNode = "//Columns"
+listItemsXml = GetValueNodeXml(nameNode, pathConfigExcelXmlFile, errorLogFile, errorMessage)
+If errorMessage <> "" Then
+    ' error
+    Stop
+Else
+    letterColumnFristRangeArray = listItemsXml(0)
+    letterColumnLastRangeArray = listItemsXml(1)
+    letterSubject = listItemsXml(2)
+    letterColumnSenderEmailAddress = listItemsXml(3)
+    letterColumnTo = listItemsXml(4)
+    letterColumnCc = listItemsXml(5)
+    letterColumnBcc = listItemsXml(6)
+    letterColumnBody = listItemsXml(7)
+    letterColumnReceivedTime =listItemsXml(8)
+    letterColumnReceivedDate = listItemsXml(9)
+    letterColumnSendTime = listItemsXml(10)
+    letterColumnSendDate = listItemsXml(11)
+    Set listItemsXml = Nothing
+    Set item = Nothing
+End If
+
+' rows excel
+errorMessage = ""
+nameNode = "//Rows"
+listItemsXml = GetValueNodeXml(nameNode, pathConfigExcelXmlFile, errorLogFile, errorMessage)
+If errorMessage <> "" Then
+    ' error
+    Stop
+Else
+    fristRowRangeArray = listItemsXml(0)
+    fristRowHeader = listItemsXml(1)
+    Set listItemsXml = Nothing
+    Set item = Nothing
+End If
+
+' values excel
+errorMessage = ""
+nameNode = "//Value"
+listItemsXml = GetValueNodeXml(nameNode, pathConfigExcelXmlFile, errorLogFile, errorMessage)
+If errorMessage <> "" Then
+    ' error
+    Stop
+Else
+    valueSubject = listItemsXml(0)
+    valueSenderEmailAddress = listItemsXml(1)
+    valueTo = listItemsXml(2)
+    valueCc = listItemsXml(3)
+    valueBcc = listItemsXml(4)
+    valueBody = listItemsXml(5)
+    valueReceivedTime =listItemsXml(6)
+    valueReceivedDate = listItemsXml(7)
+    valueSendTime = listItemsXml(8)
+    valueSendDate = listItemsXml(9)
+    Set listItemsXml = Nothing
+    Set item = Nothing
+End If
 
 nameScript = " "&Wscript.ScriptName
 

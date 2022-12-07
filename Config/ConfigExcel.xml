@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Header>
+    <Columns>
+        <LetterColumnFristRangeArray>##A##</LetterColumnFristRangeArray>
+        <LetterColumnLastRangeArray>J##</LetterColumnLastRangeArray>
+        <LetterSubject>##A##</LetterSubject>
+        <LetterColumnSenderEmailAddress>##B##</LetterColumnSenderEmailAddress>
+        <LetterColumnTo>##C##</LetterColumnTo>
+        <LetterColumnCc>##D##</LetterColumnCc>
+        <LetterColumnBcc>##E##</LetterColumnBcc>
+        <LetterColumnBody>##F##</LetterColumnBody>
+        <LetterColumnReceivedTime>##G##</LetterColumnReceivedTime>
+        <LetterColumnReceivedDate>##H##</LetterColumnReceivedDate>
+        <LetterColumnSendTime>##I##</LetterColumnSendTime>
+        <LetterColumnSendDate>##J##</LetterColumnSendDate>
+    </Columns>
+    <Rows>
+        <FristRowRangeArray>##2##</FristRowRangeArray>
+        <FristRowHeader>##1##</FristRowHeader>
+    </Rows>
+    <Value>
+        <ValueSubject>##Subject##</ValueSubject>
+        <ValueSenderEmailAddress>##SenderEmailAddress##</ValueSenderEmailAddress>
+        <ValueTo>##To##</ValueTo>
+        <ValueCc>##Cc##</ValueCc>
+        <ValueBcc>##Bcc##</ValueBcc>
+        <ValueBody>##Body##</ValueBody>
+        <ValueReceivedTime>##ReceivedTime##</ValueReceivedTime>
+        <ValueReceivedDate>##ReceivedDate##</ValueReceivedDate>
+        <ValueSendTime>##SendTime##</ValueSendTime>
+        <ValueSendDate>##SendDate##</ValueSendDate>
+    </Value>
+</Header>

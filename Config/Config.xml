@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Config>
+    <Email>
+        <Filter>
+            <Subject>##Weekly Learning Digest##</Subject>
+        </Filter>
+    </Email>
+    <PathsLocal>
+        <PathFileSave>##C:\Users\gbarajas\Documents\Curses\Bots\BotEmail\##</PathFileSave>
+        <NameFileSave>##Test.xlsx##</NameFileSave>
+    </PathsLocal>
+</Config>

@@ -1,8 +1,4 @@
-(12/5/2022 7:02:52 PM) - INFO -  Email.vbsAttempt number 0CreateExcelInstance
-(12/5/2022 7:02:53 PM) - INFO -  Email.vbsSuccess Excel instance creation
-(12/5/2022 7:02:56 PM) - INFO -  Email.vbsKilling any lining Excel instance
-(12/5/2022 7:03:23 PM) - INFO -  Email.vbsAttempt number 0CreateExcelInstance
-(12/5/2022 7:03:24 PM) - INFO -  Email.vbsSuccess Excel instance creation
-(12/5/2022 7:03:36 PM) - INFO -  Email.vbsAttempt number 0CreateExcelInstance
-(12/5/2022 7:03:37 PM) - INFO -  Email.vbsSuccess Excel instance creation
-(12/5/2022 7:03:41 PM) - INFO -  Email.vbsKilling any lining Excel instance
+(12/6/2022 5:54:56 PM) - INFO -  Email.vbsAttempt number 0CreateExcelInstance
+(12/6/2022 5:54:57 PM) - INFO -  Email.vbsSuccess Excel instance creation
+(12/6/2022 6:05:41 PM) - INFO -  Email.vbsAttempt number 0CreateExcelInstance
+(12/6/2022 6:05:43 PM) - INFO -  Email.vbsSuccess Excel instance creation
