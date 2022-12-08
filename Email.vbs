@@ -98,7 +98,8 @@ Function RunTimeMail(nameScript, infoLogFile, errorLogFile, pathFileSave, nameFi
     fristRowHeader, letterSubject, letterColumnSenderEmailAddress, letterColumnTo, letterColumnCc, letterColumnBcc, _
     letterColumnBody, letterColumnReceivedTime, letterColumnReceivedDate, letterColumnSendTime, letterColumnSendDate, valueSubject, _
     valueSenderEmailAddress, valueTo, valueCc, valueBcc, valueBody, valueReceivedTime, valueReceivedDate, valueSendTime, valueSendDate, _
-    letterColumnFristRangeArray, letterColumnLastRangeArray, fristRowRangeArray)
+    letterColumnFristRangeArray, letterColumnLastRangeArray, fristRowRangeArray, _
+    strQueryAllUnreadEmail, strQueryAllReadEmail, strQueryAllSubjectEmail, strQueryAllDateEmail, isAllUnreadEmail, isAllReadEmail, isAllSubject, isAllDateEmail)
     
     ' `````` the property's for obtain information at depending the folder in email
     '  3 = "Deleted Items"
@@ -119,12 +120,42 @@ Function RunTimeMail(nameScript, infoLogFile, errorLogFile, pathFileSave, nameFi
     Set objNamespace = objOutlook.GetNamespace("MAPI")
     Set objFolder = objNamespace.GetDefaultFolder(inbox)
 
-    Set colItems = objFolder.Items
-    Set colFilteredItems = colItems.Restrict("[Unread]=true" & " And [Subject] = " & subject) ' reading of unread mails
-    MsgBox "colFilteredItems  "&colFilteredItems.count
-    Set colFilteredItems = colFilteredItems.Restrict("[Subject] = " & subject)
+    ' Set colItems = objFolder.
+    ' ---- Get All
+    Set objQueryAllEmail = objFolder.Items
+    If objQueryAllEmail.count = 0 Then
+        ' stop and error
+    Else
+        Set colFilteredItems = objQueryAllEmail
+        MsgBox "All Email  "&colFilteredItems.count
+    End If
 
-    MsgBox colFilteredItems.Count
+    ' ---- Get All Unread' ---- Get All Read 
+    If isAllUnreadEmail = True And strQueryAllUnreadEmail <> "" Then
+        Set colFilteredItems = colFilteredItems.Restrict(strQueryAllUnreadEmail)
+        MsgBox "Get All Unread  "&colFilteredItems.count
+    ElseIf isAllReadEmail = True And strQueryAllReadEmail <> "" Then
+        Set colFilteredItems = colFilteredItems.Restrict(strQueryAllReadEmail)
+        MsgBox "Get All REd  "&colFilteredItems.count
+    End If    
+    
+    ' ---- Get All Subject
+    If isAllSubject = True And strQueryAllSubjectEmail <> "" Then
+        Set colFilteredItems = colFilteredItems.Restrict(strQueryAllSubjectEmail & subject)
+        MsgBox "Get All Subject  "&colFilteredItems.count
+    End If
+
+    ' ---- Get All Date
+    ' ---- the search option by date
+    ' -- Today
+    ' -- Yesterday
+    ' -- Tuesday
+    ' -- Monday
+    ' -- Last Week
+    If isAllDateEmail = True And strQueryAllDateEmail <> "" Then
+        Set colFilteredItems = colFilteredItems.Restrict(strQueryAllDateEmail)
+        MsgBox "Get All isAllDateEmail  "&colFilteredItems.count
+    End If
 
     Dim countItem, emailSubject, emailFrom, emailTo, emailCc, item, count
     Dim emailBcc, emailMessage, emailReceivedTim, emailReceivedDat, emailSentTime, emailSentDate
@@ -137,9 +168,12 @@ Function RunTimeMail(nameScript, infoLogFile, errorLogFile, pathFileSave, nameFi
     For countItem = colFilteredItems.Count To 1 Step -1
         ' asigna value the geting items in outlook application
         Set itemEmail  = colFilteredItems.Item(countItem)
-
+        
         arrayExcel(count,0) = itemEmail.Subject
         arrayExcel(count,1) = itemEmail.SenderEmailAddress
+        MsgBox itemEmail.Subject
+        MsgBox itemEmail.Body
+        MsgBox itemEmail.To
         arrayExcel(count,2) = itemEmail.To
         arrayExcel(count,3) = itemEmail.Cc
         arrayExcel(count,4) = itemEmail.Bcc
@@ -185,7 +219,7 @@ End Function ' RunTimeMail
 ' the function to manupulate excel applications
 ' -----------------------------------------------
 
-On Error Resume Next
+' On Error Resume Next
 
 Dim nameScript, infoLogFile, errorLogFile, pathFileSave, subject
 Dim fristRowHeader, letterSubject, letterColumnSenderEmailAddress, letterColumnTo, letterColumnCc, letterColumnBcc
@@ -197,6 +231,8 @@ Dim letterColumnFristRangeArray, letterColumnLastRangeArray, fristRowRangeArray
 ' geting values 
 Dim objXML, GroupName, Games, pathConfigExcelXmlFile, pathConfigXmlFile
 Dim plot, GameName, GameRating, errorMessage
+Dim strQueryAllUnreadEmail, strQueryAllReadEmail, strQueryAllSubjectEmail, strQueryAllDateEmail
+Dim isAllUnreadEmail, isAllReadEmail, isAllSubject, isAllDateEmail
 
 pathConfigExcelXmlFile = "C:\Users\gbarajas\documents\Curses\Bots\BotEmail\Config\ConfigExcel.xml"
 pathConfigXmlFile = "C:\Users\gbarajas\documents\Curses\Bots\BotEmail\Config\Config.xml"
@@ -226,6 +262,14 @@ If errorMessage <> "" Then
     Stop
 Else
     subject = listItemsXml(0)
+    strQueryAllUnreadEmail = listItemsXml(1)
+    strQueryAllReadEmail = listItemsXml(2)
+    strQueryAllSubjectEmail = listItemsXml(3)
+    strQueryAllDateEmail = listItemsXml(4)
+    isAllUnreadEmail = listItemsXml(5)
+    isAllReadEmail = listItemsXml(6)
+    isAllSubject = listItemsXml(7)
+    isAllDateEmail = listItemsXml(8)
     Set listItemsXml = Nothing
     Set item = Nothing
 End If
@@ -296,7 +340,8 @@ Call RunTimeMail(nameScript, infoLogFile, errorLogFile, pathFileSave, nameFileSa
     fristRowHeader, letterSubject, letterColumnSenderEmailAddress, letterColumnTo, letterColumnCc, letterColumnBcc, _
     letterColumnBody, letterColumnReceivedTime, letterColumnReceivedDate, letterColumnSendTime, letterColumnSendDate, valueSubject, _
     valueSenderEmailAddress, valueTo, valueCc, valueBcc, valueBody, valueReceivedTime, valueReceivedDate, valueSendTime, valueSendDate, _
-    letterColumnFristRangeArray, letterColumnLastRangeArray, fristRowRangeArray)
+    letterColumnFristRangeArray, letterColumnLastRangeArray, fristRowRangeArray, _
+    strQueryAllUnreadEmail, strQueryAllReadEmail, strQueryAllSubjectEmail, strQueryAllDateEmail, isAllUnreadEmail, isAllReadEmail, isAllSubject, isAllDateEmail)
 
 If Err.Number <> 0 Then
     ' return

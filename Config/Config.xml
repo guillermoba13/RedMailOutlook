@@ -3,6 +3,14 @@
     <Email>
         <Filter>
             <Subject>##Weekly Learning Digest##</Subject>
+            <QueryAllUnreadEmail>##[Unread]=true##</QueryAllUnreadEmail>
+            <QueryAllReadEmail>##[Unread]=false##</QueryAllReadEmail>
+            <QueryAllSubjectEmail>##[Subject]=##</QueryAllSubjectEmail>
+            <QueryAllDateEmail>##@SQL=%Today(""urn:schemas:httpmail:datereceived"")%##</QueryAllDateEmail>
+            <FilterAllUnreadEmail>##False##</FilterAllUnreadEmail>
+            <FilterAllReadEmail>##False##</FilterAllReadEmail>
+            <FilterAllSubject>##False##</FilterAllSubject>
+            <FilterAllDateEmail>##False##</FilterAllDateEmail>
         </Filter>
     </Email>
     <PathsLocal>
