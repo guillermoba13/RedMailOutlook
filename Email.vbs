@@ -127,22 +127,18 @@ Function RunTimeMail(nameScript, infoLogFile, errorLogFile, pathFileSave, nameFi
         ' stop and error
     Else
         Set colFilteredItems = objQueryAllEmail
-        MsgBox "All Email  "&colFilteredItems.count
     End If
 
     ' ---- Get All Unread' ---- Get All Read 
     If isAllUnreadEmail = True And strQueryAllUnreadEmail <> "" Then
         Set colFilteredItems = colFilteredItems.Restrict(strQueryAllUnreadEmail)
-        MsgBox "Get All Unread  "&colFilteredItems.count
     ElseIf isAllReadEmail = True And strQueryAllReadEmail <> "" Then
         Set colFilteredItems = colFilteredItems.Restrict(strQueryAllReadEmail)
-        MsgBox "Get All REd  "&colFilteredItems.count
     End If    
     
     ' ---- Get All Subject
     If isAllSubject = True And strQueryAllSubjectEmail <> "" Then
         Set colFilteredItems = colFilteredItems.Restrict(strQueryAllSubjectEmail & subject)
-        MsgBox "Get All Subject  "&colFilteredItems.count
     End If
 
     ' ---- Get All Date
@@ -154,7 +150,6 @@ Function RunTimeMail(nameScript, infoLogFile, errorLogFile, pathFileSave, nameFi
     ' -- Last Week
     If isAllDateEmail = True And strQueryAllDateEmail <> "" Then
         Set colFilteredItems = colFilteredItems.Restrict(strQueryAllDateEmail)
-        MsgBox "Get All isAllDateEmail  "&colFilteredItems.count
     End If
 
     Dim countItem, emailSubject, emailFrom, emailTo, emailCc, item, count
@@ -171,9 +166,6 @@ Function RunTimeMail(nameScript, infoLogFile, errorLogFile, pathFileSave, nameFi
         
         arrayExcel(count,0) = itemEmail.Subject
         arrayExcel(count,1) = itemEmail.SenderEmailAddress
-        MsgBox itemEmail.Subject
-        MsgBox itemEmail.Body
-        MsgBox itemEmail.To
         arrayExcel(count,2) = itemEmail.To
         arrayExcel(count,3) = itemEmail.Cc
         arrayExcel(count,4) = itemEmail.Bcc
@@ -234,10 +226,10 @@ Dim plot, GameName, GameRating, errorMessage
 Dim strQueryAllUnreadEmail, strQueryAllReadEmail, strQueryAllSubjectEmail, strQueryAllDateEmail
 Dim isAllUnreadEmail, isAllReadEmail, isAllSubject, isAllDateEmail
 
-pathConfigExcelXmlFile = "C:\Users\gbarajas\documents\Curses\Bots\BotEmail\Config\ConfigExcel.xml"
-pathConfigXmlFile = "C:\Users\gbarajas\documents\Curses\Bots\BotEmail\Config\Config.xml"
-infoLogFile = "C:\Users\gbarajas\Documents\Curses\Bots\BotEmail\infoLog.txt"
-errorLogFile = "C:\Users\gbarajas\Documents\Curses\Bots\BotEmail\errorLog.txt"
+pathConfigExcelXmlFile = "C:\Users\NameUser\BotEmail\Config\ConfigExcel.xml"
+pathConfigXmlFile = "C:\Users\NameUser\BotEmail\Config\Config.xml"
+infoLogFile = "C:\Users\NameUser\BotEmail\infoLog.txt"
+errorLogFile = "C:\Users\NameUser\BotEmail\errorLog.txt"
 
 ' get paths save files
 errorMessage = ""
@@ -344,13 +336,9 @@ Call RunTimeMail(nameScript, infoLogFile, errorLogFile, pathFileSave, nameFileSa
     strQueryAllUnreadEmail, strQueryAllReadEmail, strQueryAllSubjectEmail, strQueryAllDateEmail, isAllUnreadEmail, isAllReadEmail, isAllSubject, isAllDateEmail)
 
 If Err.Number <> 0 Then
-    ' return
-    MsgBox Err.Description
-    ' WScript.StdOut.WriteLine "value retunr" 
-    'WScript.StdOut.WriteLine Err.Description
     Call CloseExcelInstance(infoLogFile, errorLogFile, nameScript)
+    If errorLogFile <> "" Then WriteLog errorLogFile, "ERROR", nameScript & Err.Number & "Description: "&Err.Description
 Else
-    MsgBox "successfull"
-    'WScript.StdOut.WriteLine "value retunr"
     Call CloseExcelInstance(infoLogFile, errorLogFile, nameScript)
+    If infoLogFile <> "" Then WriteLog infoLogFile, "INFO", nameScript & "Proccess Successfull "
 End If

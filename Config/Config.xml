@@ -12,7 +12,7 @@
             <FilterAllSubject>##False##</FilterAllSubject>
             <FilterAllDateEmail>##False##</FilterAllDateEmail>
         </Filter>
-    </Email>
+    </Email>    
     <PathsLocal>
         <PathFileSave>##C:\Users\gbarajas\Documents\Curses\Bots\BotEmail\##</PathFileSave>
         <NameFileSave>##Test.xlsx##</NameFileSave>
